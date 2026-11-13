@@ -1,0 +1,19 @@
+version: 2
+updates:
+  # Opens PRs for vulnerable/outdated npm packages (Dependabot alerts show in the Security tab).
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      expo-sdk:
+        patterns: ["expo", "expo-*", "@expo/*", "react-native*", "react", "react-dom"]
+      minor-and-patch:
+        update-types: [minor, patch]
+
+  # Keeps the workflow's actions (checkout, codeql, app_action...) up to date.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
