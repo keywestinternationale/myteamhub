@@ -1,0 +1,37 @@
+# DigitalOcean App Platform spec for the myteamhub API.
+# Deployed by .github/workflows/deploy.yml (digitalocean/app_action/deploy@v2).
+# ${VAR} placeholders are filled from the workflow's env (GitHub secrets) at deploy time.
+name: myteamhub
+region: sgp
+
+services:
+  - name: api
+    github:
+      repo: keywestinternationale/myteamhub
+      branch: main
+      # GitHub Actions triggers deploys after CI passes, so App Platform's own auto-deploy is off.
+      deploy_on_push: false
+    environment_slug: node-js
+    build_command: pnpm build
+    run_command: pnpm start
+    http_port: 8080
+    instance_count: 1
+    instance_size_slug: apps-s-1vcpu-0.5gb
+    routes:
+      - path: /
+    health_check:
+      http_path: /api/health
+      initial_delay_seconds: 10
+      period_seconds: 15
+    envs:
+      - key: NODE_ENV
+        scope: RUN_AND_BUILD_TIME
+        value: production
+      - key: DATABASE_URL
+        scope: RUN_TIME
+        type: SECRET
+        value: ${DATABASE_URL}
+      - key: JWT_SECRET
+        scope: RUN_TIME
+        type: SECRET
+        value: ${JWT_SECRET}
