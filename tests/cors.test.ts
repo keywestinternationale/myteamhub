@@ -174,6 +174,17 @@ describe("Mobile API origin and cookie isolation", () => {
     }
   });
 
+  it("trusts only exact https production origins from CORS_ALLOWED_ORIGINS", () => {
+    vi.stubEnv(
+      "CORS_ALLOWED_ORIGINS",
+      " https://myteamhub.ph ,https://www.myteamhub.ph,http://insecure.example,https://localhost,https://x.example/path,not a url,",
+    );
+    expect([...trustedExpoWebOrigins()].sort()).toEqual([
+      "https://myteamhub.ph",
+      "https://www.myteamhub.ph",
+    ]);
+  });
+
   it("keeps native no-Origin requests separate", async () => {
     const base = await testServer();
     const native = await fetch(`${base}/write`, { method: "POST" });

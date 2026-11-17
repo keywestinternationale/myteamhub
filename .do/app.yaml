@@ -1,13 +1,18 @@
-# DigitalOcean App Platform spec for the myteamhub API.
+# DigitalOcean App Platform spec for myteamhub (web app + API in one app).
 # Deployed by .github/workflows/deploy.yml (digitalocean/app_action/deploy@v2).
 # ${VAR} placeholders are filled from the workflow's env (GitHub secrets) at deploy time.
 name: myteamhub
 region: sgp
 
-# DNS lives on Cloudflare: CNAME api -> <app>.ondigitalocean.app (DNS only), DO issues the TLS cert.
+# DNS lives on Cloudflare: each name is a CNAME -> <app>.ondigitalocean.app (DNS only); DO issues TLS.
+# Every domain serves both components: /api/* -> api service, everything else -> web.
 domains:
-  - domain: api.myteamhub.ph
+  - domain: myteamhub.ph
     type: PRIMARY
+  - domain: www.myteamhub.ph
+    type: ALIAS
+  - domain: api.myteamhub.ph
+    type: ALIAS
 
 services:
   - name: api
@@ -23,7 +28,8 @@ services:
     instance_count: 1
     instance_size_slug: apps-s-1vcpu-0.5gb
     routes:
-      - path: /
+      - path: /api
+        preserve_path_prefix: true
     health_check:
       http_path: /api/health
       initial_delay_seconds: 10
@@ -32,6 +38,9 @@ services:
       - key: NODE_ENV
         scope: RUN_AND_BUILD_TIME
         value: production
+      - key: CORS_ALLOWED_ORIGINS
+        scope: RUN_TIME
+        value: https://myteamhub.ph,https://www.myteamhub.ph,https://api.myteamhub.ph
       - key: DATABASE_URL
         scope: RUN_TIME
         type: SECRET
@@ -45,3 +54,23 @@ services:
         scope: RUN_TIME
         type: SECRET
         value: "${JWT_SECRET}"
+
+static_sites:
+  - name: web
+    github:
+      repo: keywestinternationale/myteamhub
+      branch: main
+      deploy_on_push: false
+    environment_slug: node-js
+    # Expo Router static export of the same app the phones run. The API is same-origin (/api),
+    # so no EXPO_PUBLIC_API_BASE_URL is needed.
+    build_command: npx expo export --platform web --output-dir web-dist
+    output_dir: web-dist
+    catchall_document: index.html
+    error_document: +not-found.html
+    routes:
+      - path: /
+    envs:
+      - key: CI
+        scope: BUILD_TIME
+        value: "1"

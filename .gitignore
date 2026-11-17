@@ -68,3 +68,6 @@ Thumbs.db
 
 # env files
 .env
+
+# Expo web export
+web-dist/

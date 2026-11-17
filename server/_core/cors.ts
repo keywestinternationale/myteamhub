@@ -36,6 +36,20 @@ export function trustedExpoWebOrigins(): Set<string> {
   for (const configured of [packager, preview]) {
     if (configured && !originHasLoopbackHostname(configured)) origins.add(configured);
   }
+  // Production web origins, e.g. "https://myteamhub.ph,https://www.myteamhub.ph".
+  // Browsers send Origin even on same-origin POSTs, so the deployed web app must be listed.
+  for (const entry of (process.env.CORS_ALLOWED_ORIGINS ?? "").split(",")) {
+    const value = entry.trim();
+    if (!value) continue;
+    try {
+      const url = new URL(value);
+      if (url.protocol === "https:" && url.origin === value && !originHasLoopbackHostname(value)) {
+        origins.add(value);
+      }
+    } catch {
+      // Ignore malformed entries rather than widening access.
+    }
+  }
   // Backward-compatible production fallback while every runtime starts injecting the explicit
   // 8328 origin. Localhost cannot use hostname prefix derivation and is handled only by exact env.
   if (packager && !originHasLoopbackHostname(packager)) {
