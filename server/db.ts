@@ -10,7 +10,12 @@ export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
       // DigitalOcean Managed MySQL requires TLS with its own CA; DATABASE_CA_CERT holds that PEM.
-      const ca = process.env.DATABASE_CA_CERT;
+      // Accept either a raw PEM or a base64-encoded PEM (how the deploy pipeline passes it).
+      const rawCa = process.env.DATABASE_CA_CERT?.trim();
+      const ca =
+        rawCa && !rawCa.startsWith("-----BEGIN")
+          ? Buffer.from(rawCa, "base64").toString("utf8")
+          : rawCa;
       _db = ca
         ? drizzle({ connection: { uri: process.env.DATABASE_URL, ssl: { ca, rejectUnauthorized: true } } })
         : drizzle(process.env.DATABASE_URL);

@@ -35,12 +35,13 @@ services:
       - key: DATABASE_URL
         scope: RUN_TIME
         type: SECRET
-        value: ${DATABASE_URL}
+        value: "${DATABASE_URL}"
+      # Multi-line PEM is passed base64-encoded (one line) so it can't break this YAML; server/db.ts decodes it.
       - key: DATABASE_CA_CERT
         scope: RUN_TIME
         type: SECRET
-        value: ${DATABASE_CA_CERT}
+        value: "${DATABASE_CA_CERT_B64}"
       - key: JWT_SECRET
         scope: RUN_TIME
         type: SECRET
-        value: ${JWT_SECRET}
+        value: "${JWT_SECRET}"

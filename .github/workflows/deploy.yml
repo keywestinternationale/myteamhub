@@ -96,11 +96,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Encode CA certificate onto one line
+        env:
+          DATABASE_CA_CERT: ${{ secrets.DATABASE_CA_CERT }}
+        run: |
+          b64=$(printf '%s' "$DATABASE_CA_CERT" | base64 -w0)
+          echo "::add-mask::$b64"
+          echo "DATABASE_CA_CERT_B64=$b64" >> "$GITHUB_ENV"
+
       - name: Deploy app spec
         uses: digitalocean/app_action/deploy@v2
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DATABASE_CA_CERT: ${{ secrets.DATABASE_CA_CERT }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
