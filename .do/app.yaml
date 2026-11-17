@@ -31,6 +31,10 @@ services:
         scope: RUN_TIME
         type: SECRET
         value: ${DATABASE_URL}
+      - key: DATABASE_CA_CERT
+        scope: RUN_TIME
+        type: SECRET
+        value: ${DATABASE_CA_CERT}
       - key: JWT_SECRET
         scope: RUN_TIME
         type: SECRET

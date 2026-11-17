@@ -9,7 +9,11 @@ let _db: ReturnType<typeof drizzle> | null = null;
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
-      _db = drizzle(process.env.DATABASE_URL);
+      // DigitalOcean Managed MySQL requires TLS with its own CA; DATABASE_CA_CERT holds that PEM.
+      const ca = process.env.DATABASE_CA_CERT;
+      _db = ca
+        ? drizzle({ connection: { uri: process.env.DATABASE_URL, ssl: { ca, rejectUnauthorized: true } } })
+        : drizzle(process.env.DATABASE_URL);
     } catch {
       console.warn("[Database] Failed to connect");
       _db = null;
