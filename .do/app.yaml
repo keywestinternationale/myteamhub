@@ -4,6 +4,11 @@
 name: myteamhub
 region: sgp
 
+# DNS lives on Cloudflare: CNAME api -> <app>.ondigitalocean.app (DNS only), DO issues the TLS cert.
+domains:
+  - domain: api.myteamhub.ph
+    type: PRIMARY
+
 services:
   - name: api
     github:
