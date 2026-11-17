@@ -66,8 +66,9 @@ static_sites:
     # so no EXPO_PUBLIC_API_BASE_URL is needed.
     build_command: npx expo export --platform web --output-dir web-dist
     output_dir: web-dist
+    # Unknown paths load the app; Expo Router then renders its own not-found screen.
+    # (App Platform allows only one of catchall_document / error_document.)
     catchall_document: index.html
-    error_document: +not-found.html
     routes:
       - path: /
     envs:
