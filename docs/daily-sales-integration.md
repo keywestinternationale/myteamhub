@@ -116,6 +116,11 @@ Every request must send `Authorization: Bearer <INTEGRATION_API_KEY>`. The key i
 band (never in chat or email bodies) and is stored only in the portal server's configuration.
 Wrong or missing key → `401`. If the server has no key configured, all routes answer `503`.
 
+**Interactive docs (Swagger):** `https://api.myteamhub.ph/api/integration/docs/` — the browser asks
+for a login: any username, and the integration API key as the password. Inside, click **Authorize**
+and paste the same key to use *Try it out* (these calls hit live data). Raw spec:
+`/api/integration/docs/openapi.json`.
+
 ### List reports
 
 ```bash

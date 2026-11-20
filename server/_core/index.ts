@@ -9,6 +9,7 @@ import { createContext } from "./context";
 import { createCorsMiddleware } from "./cors";
 import { clearLegacySessionCookie } from "./cookies";
 import { createIntegrationRouter, INTEGRATION_BASE_PATH } from "../integration";
+import { createIntegrationDocsRouter, INTEGRATION_DOCS_PATH } from "../integration-docs";
 
 async function startServer() {
   const app = express();
@@ -29,6 +30,8 @@ async function startServer() {
 
   // Server-to-server API for the existing Web Portal; bearer-key auth, fail-closed.
   app.use(INTEGRATION_BASE_PATH, createIntegrationRouter());
+  // Swagger docs for it; HTTP Basic auth (password = integration key), fail-closed.
+  app.use(INTEGRATION_DOCS_PATH, createIntegrationDocsRouter());
 
   app.use(
     "/api/trpc",

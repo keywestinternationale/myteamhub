@@ -77,12 +77,12 @@ export function requireIntegrationKey(getKeys = () => configuredKeyDigests()): R
   };
 }
 
-const listQuery = z.object({
+export const listQuery = z.object({
   status: z.enum(STATUSES).default("pending"),
   limit: z.coerce.number().int().min(1).max(500).default(100),
 });
 
-const statusBody = z
+export const statusBody = z
   .object({
     status: z.enum(["processing", "processed", "failed"]),
     failureMessage: z.string().trim().max(2000).optional(),
@@ -101,7 +101,7 @@ const employeeInput = z.object({
   store: z.string().trim().max(255).nullish(),
 });
 
-const employeesBody = z.object({
+export const employeesBody = z.object({
   employees: z
     .array(employeeInput)
     .min(1)
