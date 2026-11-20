@@ -61,6 +61,32 @@ services:
         type: SECRET
         value: "${INTEGRATION_API_KEYS}"
 
+# Runs before each release goes live: applies new drizzle/*.sql migrations + drizzle/grants.sql
+# (server/migrate.ts). If it fails, the deploy stops and the previous release keeps serving.
+# Runs inside DO, so DB trusted sources can be restricted to this app (no CI runner IPs needed).
+jobs:
+  - name: migrate
+    kind: PRE_DEPLOY
+    github:
+      repo: keywestinternationale/myteamhub
+      branch: main
+      deploy_on_push: false
+    environment_slug: node-js
+    build_command: pnpm build:migrate
+    run_command: node dist/migrate.js
+    instance_count: 1
+    instance_size_slug: apps-s-1vcpu-0.5gb
+    envs:
+      # doadmin connection string; only this job gets it, never the api service.
+      - key: DATABASE_ADMIN_URL
+        scope: RUN_TIME
+        type: SECRET
+        value: "${DATABASE_ADMIN_URL}"
+      - key: DATABASE_CA_CERT
+        scope: RUN_TIME
+        type: SECRET
+        value: "${DATABASE_CA_CERT_B64}"
+
 static_sites:
   - name: web
     github:

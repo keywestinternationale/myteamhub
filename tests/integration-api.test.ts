@@ -14,6 +14,7 @@ let server: Server | null = null;
 
 afterEach(async () => {
   if (!server) return;
+  server.closeAllConnections();
   await new Promise<void>((resolve) => server?.close(() => resolve()));
   server = null;
 });

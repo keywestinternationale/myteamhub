@@ -100,6 +100,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Require secrets the app spec needs
+        env:
+          DATABASE_ADMIN_URL: ${{ secrets.DATABASE_ADMIN_URL }}
+          INTEGRATION_API_KEYS: ${{ secrets.INTEGRATION_API_KEYS }}
+        run: |
+          missing=0
+          for name in DATABASE_ADMIN_URL INTEGRATION_API_KEYS; do
+            if [ -z "${!name}" ]; then echo "::error::GitHub secret $name is not set"; missing=1; fi
+          done
+          exit $missing
+
       - name: Encode CA certificate onto one line
         env:
           DATABASE_CA_CERT: ${{ secrets.DATABASE_CA_CERT }}
@@ -114,6 +125,7 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           INTEGRATION_API_KEYS: ${{ secrets.INTEGRATION_API_KEYS }}
+          DATABASE_ADMIN_URL: ${{ secrets.DATABASE_ADMIN_URL }}
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
           app_spec_location: .do/app.yaml
