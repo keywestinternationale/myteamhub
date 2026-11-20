@@ -8,6 +8,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { createCorsMiddleware } from "./cors";
 import { clearLegacySessionCookie } from "./cookies";
+import { createIntegrationRouter, INTEGRATION_BASE_PATH } from "../integration";
 
 async function startServer() {
   const app = express();
@@ -25,6 +26,9 @@ async function startServer() {
   app.get("/api/health", (_req, res) => {
     res.json({ ok: true, timestamp: Date.now() });
   });
+
+  // Server-to-server API for the existing Web Portal; bearer-key auth, fail-closed.
+  app.use(INTEGRATION_BASE_PATH, createIntegrationRouter());
 
   app.use(
     "/api/trpc",

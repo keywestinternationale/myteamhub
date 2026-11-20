@@ -54,6 +54,12 @@ services:
         scope: RUN_TIME
         type: SECRET
         value: "${JWT_SECRET}"
+      # Bearer key(s) for the Web Portal integration API (/api/integration/v1). Comma-separated for
+      # rotation; each >= 32 chars. Unset/short => those routes answer 503 (never open).
+      - key: INTEGRATION_API_KEYS
+        scope: RUN_TIME
+        type: SECRET
+        value: "${INTEGRATION_API_KEYS}"
 
 static_sites:
   - name: web

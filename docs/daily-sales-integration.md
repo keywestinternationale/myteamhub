@@ -107,6 +107,51 @@ Important columns:
 - `createdAt`
 - `processedAt`
 
+## Portal integration API (recommended)
+
+Instead of a database login, the portal-side process calls an authenticated HTTPS API.
+Base URL: `https://api.myteamhub.ph/api/integration/v1`
+
+Every request must send `Authorization: Bearer <INTEGRATION_API_KEY>`. The key is shared out of
+band (never in chat or email bodies) and is stored only in the portal server's configuration.
+Wrong or missing key → `401`. If the server has no key configured, all routes answer `503`.
+
+### List reports
+
+```bash
+curl -H "Authorization: Bearer $KEY" \
+  "https://api.myteamhub.ph/api/integration/v1/daily-sales?status=pending&limit=100"
+```
+
+`status` is `pending` (default), `processing`, `processed` or `failed`; `limit` is 1–500 (default 100),
+oldest first. Response: `{ "reports": [ { id, idempotencyKey, employeeId, salesDate, location, store,
+totalAmount, items, status, failureMessage, createdAt, processedAt } ] }`. `totalAmount` is a decimal
+string (e.g. `"12500.00"`); `items` is an array (`[]` for amount-only reports).
+
+### Update a report's status
+
+```bash
+curl -X POST -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" \
+  -d '{"status":"processed"}' \
+  https://api.myteamhub.ph/api/integration/v1/daily-sales/<id>/status
+```
+
+`status` is `processing`, `processed` or `failed` (`failed` requires `failureMessage`). `processed` is
+final: repeating it returns `200` with `"unchanged": true`; trying to change it afterwards returns `409`.
+Unknown id → `404`.
+
+### Push the employee list
+
+```bash
+curl -X PUT -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" \
+  -d '{"employees":[{"employeeId":"10105","name":"Juan Dela Cruz","birthdate":"1990-01-31","active":true,"location":"KIS: HEAD OFFICE","store":null}]}' \
+  https://api.myteamhub.ph/api/integration/v1/employees
+```
+
+Upserts by `employeeId` (1–5000 per call, ids unique within a call). Send resigned staff with
+`"active": false` rather than omitting them — omitted employees are left unchanged. Response:
+`{ "upserted": <count> }`. Invalid input → `400` with `issues`.
+
 ## Portal worker behavior
 
 1. Read rows where `status = 'pending'`.

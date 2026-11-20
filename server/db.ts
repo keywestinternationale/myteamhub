@@ -1,6 +1,13 @@
-import { eq } from "drizzle-orm";
+import { asc, eq, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { dailySalesInbox, InsertDailySalesInbox, InsertUser, users } from "../drizzle/schema";
+import {
+  dailySalesInbox,
+  DailySalesInbox,
+  InsertDailySalesInbox,
+  InsertUser,
+  portalEmployees,
+  users,
+} from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -114,4 +121,76 @@ export async function insertDailySalesInbox(report: InsertDailySalesInbox) {
   if (!db) throw new Error("Database is not available");
   await db.insert(dailySalesInbox).values(report);
   return report;
+}
+
+// ---- Integration API (server/integration.ts) ----
+
+export type DailySalesRow = DailySalesInbox;
+export type PortalEmployeeInput = {
+  employeeId: string;
+  name: string;
+  birthdate: string;
+  active: boolean;
+  location: string | null;
+  store: string | null;
+};
+
+async function requireDb() {
+  const db = await getDb();
+  if (!db) throw new Error("Database is not available");
+  return db;
+}
+
+export async function listDailySalesByStatus(
+  status: DailySalesInbox["status"],
+  limit: number,
+): Promise<DailySalesRow[]> {
+  const db = await requireDb();
+  return db
+    .select()
+    .from(dailySalesInbox)
+    .where(eq(dailySalesInbox.status, status))
+    .orderBy(asc(dailySalesInbox.createdAt), asc(dailySalesInbox.id))
+    .limit(limit);
+}
+
+export async function getDailySalesById(id: string): Promise<DailySalesRow | undefined> {
+  const db = await requireDb();
+  const result = await db.select().from(dailySalesInbox).where(eq(dailySalesInbox.id, id)).limit(1);
+  return result[0];
+}
+
+export async function updateDailySalesStatus(
+  id: string,
+  status: "processing" | "processed" | "failed",
+  failureMessage: string | null,
+): Promise<void> {
+  const db = await requireDb();
+  await db
+    .update(dailySalesInbox)
+    .set({
+      status,
+      failureMessage,
+      processedAt: status === "processed" ? new Date() : null,
+    })
+    .where(eq(dailySalesInbox.id, id));
+}
+
+export async function upsertPortalEmployees(employees: PortalEmployeeInput[]): Promise<void> {
+  const db = await requireDb();
+  // Chunk so one huge payload doesn't become one oversized statement.
+  for (let i = 0; i < employees.length; i += 500) {
+    await db
+      .insert(portalEmployees)
+      .values(employees.slice(i, i + 500))
+      .onDuplicateKeyUpdate({
+        set: {
+          name: sql`values(${portalEmployees.name})`,
+          birthdate: sql`values(${portalEmployees.birthdate})`,
+          active: sql`values(${portalEmployees.active})`,
+          location: sql`values(${portalEmployees.location})`,
+          store: sql`values(${portalEmployees.store})`,
+        },
+      });
+  }
 }

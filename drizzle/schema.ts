@@ -1,4 +1,4 @@
-import { decimal, int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { boolean, decimal, int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -47,3 +47,21 @@ export const dailySalesInbox = mysqlTable("daily_sales_inbox", {
 
 export type DailySalesInbox = typeof dailySalesInbox.$inferSelect;
 export type InsertDailySalesInbox = typeof dailySalesInbox.$inferInsert;
+
+/**
+ * Employee master list pushed by the existing Web Portal through the integration API
+ * (PUT /api/integration/v1/employees). Mobile login will authenticate against this table.
+ */
+export const portalEmployees = mysqlTable("portal_employees", {
+  employeeId: varchar("employeeId", { length: 64 }).primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  birthdate: varchar("birthdate", { length: 10 }).notNull(),
+  active: boolean("active").notNull(),
+  location: varchar("location", { length: 255 }),
+  store: varchar("store", { length: 255 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type PortalEmployee = typeof portalEmployees.$inferSelect;
+export type InsertPortalEmployee = typeof portalEmployees.$inferInsert;
