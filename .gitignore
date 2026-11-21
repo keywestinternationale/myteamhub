@@ -71,3 +71,7 @@ Thumbs.db
 
 # Expo web export
 web-dist/
+
+# Python bytecode
+__pycache__/
+*.pyc

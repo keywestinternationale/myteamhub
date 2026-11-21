@@ -1,0 +1,76 @@
+{
+  "source": "/Users/sherwineymardlagumen/Projects/GoodBehavior",
+  "sourceCommit": "7cbfe1119505a714d55e636479895ae9e1ea40cb",
+  "installedAt": "2026-11-17T16:38:36+00:00",
+  "updatedAt": null,
+  "files": {
+    ".claude/skills/audit-goodbehavior/SKILL.md": {
+      "from": ".claude/skills/audit-goodbehavior/SKILL.md",
+      "sha256": "3d4f8c617cf37ac19bda9bae97fb39f06cbd3af66eaca94c84ffa4b55cdf0eb5"
+    },
+    ".claude/skills/roadmap-goodbehavior/SKILL.md": {
+      "from": ".claude/skills/roadmap-goodbehavior/SKILL.md",
+      "sha256": "c51ed9f1ed7f79d26a35a3fa7c744a8ee42dbbd664a5d72f7cf4457c8e1f3bcc"
+    },
+    ".claude/skills/gate-build-goodbehavior/SKILL.md": {
+      "from": ".claude/skills/gate-build-goodbehavior/SKILL.md",
+      "sha256": "9b873789fdbbd4747c30aee14cd3d4fb6896f137b8c3baee2a8dac2d42e1dd66"
+    },
+    ".claude/skills/verify-goodbehavior/SKILL.md": {
+      "from": ".claude/skills/verify-goodbehavior/SKILL.md",
+      "sha256": "950211ee9de1ed14276c787015b557df32adb28971928677cbb470eef4043e08"
+    },
+    ".claude/skills/uatplan-goodbehavior/SKILL.md": {
+      "from": ".claude/skills/uatplan-goodbehavior/SKILL.md",
+      "sha256": "845e5f17bd38a87ab2129b89e0daa9df9c9dc8c0c846c4fb494b7ba01e7d4e84"
+    },
+    ".claude/skills/learn-goodbehavior/SKILL.md": {
+      "from": ".claude/skills/learn-goodbehavior/SKILL.md",
+      "sha256": "8f36f3189b2006a55c1fb3c9bda4c9e0a87b8df89f1c383eefb76ca614362435"
+    },
+    ".claude/skills/update-goodbehavior/SKILL.md": {
+      "from": ".claude/skills/update-goodbehavior/SKILL.md",
+      "sha256": "6ff7b71c4d5fd40427e2ae72d1c69c69a6c9c7fb32cc91b0898c29e67a6d065c"
+    },
+    ".claude/goodbehavior/profiles/development.md": {
+      "from": "templates/profiles/development.md",
+      "sha256": "128b9cae4138e369b8b03f81582c9514877588682895faa7c9bcf23ac0813f1f"
+    },
+    ".claude/goodbehavior/profiles/devops.md": {
+      "from": "templates/profiles/devops.md",
+      "sha256": "aa6483c9faf009aad2a2487d0b27853fcf26d35c7bec2547b002ccfb891149de"
+    },
+    ".claude/goodbehavior/profiles/devops/baseline.md": {
+      "from": "templates/profiles/devops/baseline.md",
+      "sha256": "b15f4c14f5d63048a06c015438feaa8f035378981d7697f1f21a5bd5a17aa948"
+    },
+    ".claude/goodbehavior/profiles/devops/digitalocean.md": {
+      "from": "templates/profiles/devops/digitalocean.md",
+      "sha256": "8da4df2044a00e7dd4c6eeebdf6fe21c6e7836b6ab0d500ad610649d41ee2afe"
+    },
+    ".claude/goodbehavior/profiles/devops/guard.py": {
+      "from": "templates/profiles/devops/guard.py",
+      "sha256": "327a4abb99a6561c1dc9b0abf069ce7886475d3d88fdb4ea90844a7e9fbe8587"
+    },
+    "CLAUDE.md": {
+      "from": "CLAUDE.md",
+      "sha256": "e7d808aad813599ba646070e69aaf874d0da69c731d92bda0df7e79b2db3acf6"
+    },
+    "docs/plans/ROADMAP.md": {
+      "from": "templates/ROADMAP.md",
+      "sha256": "27c79878e037e9028c74a8a70ffa3a731ede2036fc6084059f828f7db8c776a0"
+    },
+    "docs/plans/PRODUCTION-BACKLOG.md": {
+      "from": "templates/PRODUCTION-BACKLOG.md",
+      "sha256": "8c07a7b7d88eb0025219adbe3cdfee63f5706ae63c763ae54855242b938cad55"
+    },
+    "docs/UAT-PLAN.md": {
+      "from": "templates/UAT-PLAN.md",
+      "sha256": "eca7386964fe0424d7199283508bec533b7c957bc991b7eebd52821c4c3c7e49"
+    },
+    ".claude/hooks/done-gate.py": {
+      "from": ".claude/hooks/done-gate.py",
+      "sha256": "4da53eaa8228849b2e11c1f40e21baabde764b888c0f8ef535aabc2532959aa8"
+    }
+  }
+}
